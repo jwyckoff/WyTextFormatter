@@ -271,6 +271,7 @@ IfExist,%a_startup%/%A_ScriptName%.lnk
 {
 	global MyRadioGroup
 	global MyEdit
+	global MyPreview
 	global AutoPaste
 
 	R_WyGui_Build:
@@ -299,67 +300,69 @@ IfExist,%a_startup%/%A_ScriptName%.lnk
 		Gui, 1:Add, Button, h25 w126  Default,OK
 		Gui, 1:Add, Button, h25 w126 , &Preview   	
 		Gui, 1:Add, Button, h25 w126 , &Cancel   	
+		ButtonCancel:
+			Gui, 1:Hide
+			return
+		ButtonPreview:
+			Gui, 1:Submit
+			tempString := FormatStringPerFormat(MyRadioGroup,MyEdit)
+			GuiControl,, MyPreview, %tempString%
+			Gui, 1:Show
+			return
+
+		ButtonOK:
+			Gui, 1:Submit
+			tempString := FormatStringPerFormat(MyRadioGroup,MyEdit)
+			clipboard := tempString
+
+			if (AutoPaste = 1)
+				Send ^v
+			
+		EndFx:
+			return
 		return
 
 	WyGui_Show()
 	{ 
 		Gui, 1:Show
 		GuiControl,, MyEdit, %clipboard%
+		GuiControl,, MyPreview
 		return
-		ButtonPreview:
-			
-		ButtonCancel:
-			Gui, 1:Hide
-			return
-		ButtonOK:
-			Gui, 1:Submit
-		
-
-			if MyRadioGroup = 1 ;Format Phone Number
-			{
-				clipboard := FormatPhoneNumber(MyEdit)
-			}
-			else if MyRadioGroup = 2 ; Format Title
-			{
-				StringUpper, clipboard, MyEdit , T
-			}  
-			else if MyRadioGroup = 3 ; Format Upper
-			{
-				StringUpper, clipboard, MyEdit
-			}  
-			else if MyRadioGroup = 4 ; Format Lower
-			{
-				StringLower, clipboard, MyEdit
-			} 
-			else if MyRadioGroup = 5 ; String Formatting
-			{
-				clipboard := StripFormattingOfText()
-			} 
-			else if MyRadioGroup = 6 ; space formatting
-			{
-				StringUpper, MyEdit, MyEdit
-				clipboard := SpaceFormatting(MyEdit)
-			} 
-			else if MyRadioGroup = 7 ;
-			{
-				clipboard := AddSpaceBeforeUpper(MyEdit)
-			} 
-			else if MyRadioGroup = 8 ;
-			{
-				clipboard := CreateLineOfSameLength(MyEdit,"-")
-			}
- 			
-			if (AutoPaste = 1)
-				Send ^v
-			
-		EndFx:
-			return
 	}
+			
+		
+	
 
 	; "MAIN"
 	goto, R_WyGui_Build
 	; END "MAIN"
 
+}
+
+FormatStringPerFormat(iOption, inputString)
+{
+	returnString := ""
+	switch iOption
+		{
+			case 1: ;Format Phone Number
+				returnString := FormatPhoneNumber(inputString)
+			case 2: ; Format Title
+				StringUpper, returnString, inputString , T
+			case 3:  ; Format Upper
+				StringUpper, returnString, inputString
+			case 4: ; Format Lower
+				StringLower, returnString, inputString
+			case 5:
+				returnString := StripFormattingOfText()
+			case 6: 
+				StringUpper, inputString, inputString
+				returnString := SpaceFormatting(inputString)
+			case 7: 
+				returnString := AddSpaceBeforeUpper(inputString)
+			case 8: 
+				returnString := CreateLineOfSameLength(inputString,"-")
+		}
+	return returnString
 }
 
 ;**************************************************************************************
@@ -379,23 +382,23 @@ IfExist,%a_startup%/%A_ScriptName%.lnk
 		WyGui_Show()
 		return
 
-		{
-			#IfWinActive , ahk_class ahk_class AutoHotkeyGUI
-			p::
-				clipboard := FormatPhoneNumber(MyEdit)
-				Gui, 1:Hide
-				return
-			t::
-				StringUpper, clipboard, MyEdit , T
-				Gui, 1:Hide
-				return
-			u::
-				clipboard := StringUpper, clipboard, MyEdit
-				Gui, 1:Hide
-				return
+		; {
+		; 	#IfWinActive , ahk_class ahk_class AutoHotkeyGUI
+		; 	p::
+		; 		clipboard := FormatPhoneNumber(MyEdit)
+		; 		Gui, 1:Hide
+		; 		return
+		; 	t::
+		; 		StringUpper, clipboard, MyEdit , T
+		; 		Gui, 1:Hide
+		; 		return
+		; 	u::
+		; 		clipboard := StringUpper, clipboard, MyEdit
+		; 		Gui, 1:Hide
+		; 		return
 				
-			#IfWinActive
-		}
+		; 	#IfWinActive
+		; }
 
 
 	
