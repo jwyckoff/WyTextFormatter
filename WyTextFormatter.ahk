@@ -201,30 +201,7 @@ IfExist,%a_startup%/%A_ScriptName%.lnk
 		Send !{Enter}
 	}
 
-	;SetReminder - Sets the reminder time in MLO
-	SetReminder(spanOfTime)
-	{
-		Send {F2}
-		Send {Right}
-		Send {Space} reminder %spanOfTime%
-		Send !{Enter}
-	}
-	LightroomStack2Photos()
-	{
-		Send +{Right}
-		Sleep 100
-		Send ^g
-		Sleep 400
-		Send {Right}
-	}
-	CreateTimeStamp(message)
-	{
-		Send ^{End}
-		FormatTime, TimeString, , ddd M/d/yyyy h:mm:ss tt
-		Send -----------------------------{ENTER}
-		Send %TimeString%{ENTER}
-		Send %message%
-	}
+	
 
 	StringJoin(arr, d=";")
 	{
@@ -238,23 +215,7 @@ IfExist,%a_startup%/%A_ScriptName%.lnk
 		return retString
 	}
 
-	CreateTimeStampCalled()
-	{
-		FormatTime, TimeString, , ddd M/d/yyyy h:mm:ss tt
-		Send Called at %TimeString%{ENTER}
-	}
-
-	CreateDateTimeStamp(format)
-	{
-		FormatTime, TimeString2, , %format%
-		return %TimeString2%
-	}
-
-	SendDateTimeStamp(format)
-	{ 
-		var := CreateDateTimeStamp(format)
-		Send %var%
-	}	
+	
 
 
 ;**************************************************************************************
@@ -293,6 +254,7 @@ IfExist,%a_startup%/%A_ScriptName%.lnk
 		Gui, 1:Add, Radio,, &6 - S P A C E  T I T L E
 		Gui, 1:Add, Radio,, &7 - AddSpaceBeforeUpper
 		Gui, 1:Add, Radio,, &8 - -------------------
+;		Gui, 1:Add,	GroupBox, 	 myGroupBox, Options
 		Gui, 1:Add, Checkbox, vAutoPaste, Send Control-&V?
 		Gui, 1:Add, Edit, w390 vMyPreview,  
 		
